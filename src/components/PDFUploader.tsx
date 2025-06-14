@@ -1,6 +1,6 @@
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileText, Loader2, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Loader2, AlertCircle, HelpCircle } from 'lucide-react';
 import { PDFData } from '../pages/Index';
 import { extractTextFromPDF, summarizeText } from '../utils/pdfProcessor';
 
