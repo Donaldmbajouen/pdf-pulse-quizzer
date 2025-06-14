@@ -1,135 +1,102 @@
 
 import { useState } from 'react';
-import PDFUploader from '../components/PDFUploader';
-import SummaryViewer from '../components/SummaryViewer';
-import QuizGenerator from '../components/QuizGenerator';
-import { FileText, Brain, HelpCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Building2, Users, MapPin, ShoppingCart } from 'lucide-react';
+import PharmacyDashboard from '@/components/PharmacyDashboard';
+import ClientInterface from '@/components/ClientInterface';
 
-export interface PDFData {
-  text: string;
-  summary: string;
-  quiz?: Quiz;
-}
+export default function Index() {
+  const [activeView, setActiveView] = useState<'home' | 'pharmacy' | 'client'>('home');
 
-export interface Quiz {
-  title: string;
-  levels: {
-    easy: Question[];
-    medium: Question[];
-    hard: Question[];
-  };
-}
+  if (activeView === 'pharmacy') {
+    return <PharmacyDashboard onBack={() => setActiveView('home')} />;
+  }
 
-export interface Question {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-}
-
-const Index = () => {
-  const [currentStep, setCurrentStep] = useState<'upload' | 'summary' | 'quiz'>('upload');
-  const [pdfData, setPdfData] = useState<PDFData | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const handlePDFProcessed = (data: PDFData) => {
-    setPdfData(data);
-    setCurrentStep('summary');
-  };
-
-  const handleGenerateQuiz = async (quiz: Quiz) => {
-    if (pdfData) {
-      setPdfData({ ...pdfData, quiz });
-      setCurrentStep('quiz');
-    }
-  };
-
-  const resetApp = () => {
-    setPdfData(null);
-    setCurrentStep('upload');
-    setIsProcessing(false);
-  };
-
-  const steps = [
-    { id: 'upload', label: 'Télécharger PDF', icon: FileText, active: currentStep === 'upload' },
-    { id: 'summary', label: 'Résumé IA', icon: Brain, active: currentStep === 'summary' },
-    { id: 'quiz', label: 'QCM Génératif', icon: HelpCircle, active: currentStep === 'quiz' }
-  ];
+  if (activeView === 'client') {
+    return <ClientInterface onBack={() => setActiveView('home')} />;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-indigo-100">
-      {/* Header avec navigation */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-violet-200 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-violet-500 to-blue-500 rounded-xl">
-                <FileText className="w-6 h-6 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            PharmaCare Management
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Solution complète de gestion de pharmacies et de recherche de médicaments
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveView('pharmacy')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <Building2 className="w-8 h-8 text-blue-600" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                PDF Pulse Quizzer
-              </h1>
+              <CardTitle className="text-2xl">Espace Pharmacie</CardTitle>
+              <CardDescription>
+                Gérez votre inventaire, suivez vos stocks et recevez des alertes
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Gestion des médicaments</li>
+                <li>• Suivi des niveaux de stock</li>
+                <li>• Alertes automatiques</li>
+                <li>• Historique des ventes</li>
+              </ul>
+              <Button className="w-full mt-6" onClick={() => setActiveView('pharmacy')}>
+                Accéder à l'espace pharmacie
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveView('client')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <Users className="w-8 h-8 text-green-600" />
+              </div>
+              <CardTitle className="text-2xl">Espace Client</CardTitle>
+              <CardDescription>
+                Trouvez vos médicaments, comparez les prix et localisez les pharmacies
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Recherche de médicaments</li>
+                <li>• Comparaison des prix</li>
+                <li>• Géolocalisation</li>
+                <li>• Commandes en ligne</li>
+              </ul>
+              <Button className="w-full mt-6" variant="outline" onClick={() => setActiveView('client')}>
+                Rechercher des médicaments
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-16 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="flex flex-col items-center">
+              <MapPin className="w-12 h-12 text-blue-500 mb-4" />
+              <h3 className="font-semibold text-lg mb-2">Géolocalisation</h3>
+              <p className="text-gray-600 text-sm">Trouvez les pharmacies les plus proches de vous</p>
             </div>
-            {pdfData && (
-              <button
-                onClick={resetApp}
-                className="px-4 py-2 text-sm text-violet-600 hover:text-violet-800 transition-colors"
-              >
-                Nouveau PDF
-              </button>
-            )}
-          </div>
-          
-          {/* Barre de progression */}
-          <div className="mt-4 flex items-center space-x-4">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
-                  step.active 
-                    ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white shadow-lg' 
-                    : 'bg-white/60 text-gray-600'
-                }`}>
-                  <step.icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{step.label}</span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`mx-2 h-0.5 w-8 transition-colors ${
-                    index < steps.findIndex(s => s.active) ? 'bg-violet-300' : 'bg-gray-200'
-                  }`} />
-                )}
-              </div>
-            ))}
+            <div className="flex flex-col items-center">
+              <ShoppingCart className="w-12 h-12 text-green-500 mb-4" />
+              <h3 className="font-semibold text-lg mb-2">Commandes en ligne</h3>
+              <p className="text-gray-600 text-sm">Commandez et payez vos médicaments en ligne</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Building2 className="w-12 h-12 text-purple-500 mb-4" />
+              <h3 className="font-semibold text-lg mb-2">Gestion simplifiée</h3>
+              <p className="text-gray-600 text-sm">Outils intuitifs pour les pharmacies</p>
+            </div>
           </div>
         </div>
-      </header>
-
-      {/* Contenu principal */}
-      <main className="container mx-auto px-6 py-8">
-        {currentStep === 'upload' && (
-          <PDFUploader 
-            onPDFProcessed={handlePDFProcessed}
-            isProcessing={isProcessing}
-            setIsProcessing={setIsProcessing}
-          />
-        )}
-        
-        {currentStep === 'summary' && pdfData && (
-          <SummaryViewer 
-            pdfData={pdfData}
-            onGenerateQuiz={handleGenerateQuiz}
-          />
-        )}
-        
-        {currentStep === 'quiz' && pdfData?.quiz && (
-          <QuizGenerator 
-            quiz={pdfData.quiz}
-            onBack={() => setCurrentStep('summary')}
-          />
-        )}
-      </main>
+      </div>
     </div>
   );
-};
-
-export default Index;
+}
